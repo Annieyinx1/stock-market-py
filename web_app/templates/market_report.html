@@ -3,14 +3,14 @@
 {% block content %}
 
     <h2>Stock Report for {{ symbol }}</h2>
-
-    <!-- TODO: consider using a table instead of a list -->
-    <!-- https://www.w3schools.com/html/html_tables.asp -->
-    <!-- https://getbootstrap.com/docs/4.0/content/tables/ -->
+    <p>Date: {{date}}</p>
     <ul>
     {% for index, row in results.iterrows() %}
         <li>{{ row["Events"] }} | {{ row["Values"] }}</li>
     {% endfor %}
+    </ul>
+    <ul>
+    <img src = 'historic_trend.png'>
     </ul>
 
 {% endblock %}
