@@ -2,6 +2,7 @@ import os
 import json
 from pprint import pprint
 from datetime import datetime
+import panda as pd
 
 import requests
 from dotenv import load_dotenv
@@ -12,6 +13,7 @@ RAPID_API_KEY = os.getenv("RAPID_API_KEY")
 COUNTRY_CODE = os.getenv("COUNTRY_CODE", default="US")
 LANGUAGE = os.getenv("LANGUAGE", default="en")
 
+stock_info = {}
 
 def getStockData(symbol, interval="1d", range="3m"):
     url = "https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/get-charts"
@@ -24,12 +26,13 @@ def getStockData(symbol, interval="1d", range="3m"):
         }
 
     response = requests.request("GET", url, headers=headers, params=querystring)
-    inputdata = json.loads(response.text)
+    response = json.loads(response.text)
 
-    if(inputdata["chart"]["result"] is None):
+    if(response["chart"]["result"] is None):
         print("Symbol Not Found")
+        quit()
     else:
-        return inputdata
+        return response
 
 def parseTimestamp(inputdata):
     timestamplist=[]
@@ -61,3 +64,13 @@ def attachEvents(inputdata):
         eventlist.append("close")
     
     return eventlist
+
+if if __name__ == "__main__":
+    symbol = input("Enter the stock symbol: ")
+    inputdata = getStockData(symbol = symbol)
+
+    if(None != stock_info):
+        stock_info["Timestamp"]=parseTimestamp(inputdata)
+        stock_info["Values"]=parseValues(inputdata)
+        stock_info["Events"]=attachEvents(inputdata)
+        df = pd.DataFrame(stock_info)
