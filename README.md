@@ -21,7 +21,7 @@ Obtain API Keys from the [RapidAPI](https://rapidapi.com/apidojo/api/yahoo-finan
 
 ## Usage
 
-From within the virtual environment, ensure you can run each of the following files and see them produce their desired results of: printing today's weather forecast, and sending an example email, respectively.
+From within the virtual environment, ensure you can run each of the following files and see them produce their desired results of: printing today's selected stock performance, and sending an example email, respectively.
 
 ```sh
 python -m app.get_stock_info # note the module-syntax invocation
