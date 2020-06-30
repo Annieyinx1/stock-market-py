@@ -1,6 +1,7 @@
 import os
 import json
 from pprint import pprint
+from datetime import datetime
 
 import requests
 from dotenv import load_dotenv
@@ -13,7 +14,7 @@ LANGUAGE = os.getenv("LANGUAGE", default="en")
 
 url = "https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/get-charts"
 
-querystring = {"region":COUNTRY_CODE,"lang":LANGUAGE,"symbol":"AMZN","interval":"5m","range":"1d"}
+querystring = {"region":COUNTRY_CODE,"lang":LANGUAGE,"symbol":"AMZN","interval":"1d","range":"5d"}
 
 headers = {
     'x-rapidapi-host': "apidojo-yahoo-finance-v1.p.rapidapi.com",
@@ -23,3 +24,23 @@ headers = {
 response = requests.request("GET", url, headers=headers, params=querystring)
 
 print(response.text)
+
+def parseTimestamp(inputdata):
+    timestamplist=[]
+    timestamplist.extend(inputdata["chart"]["result"][0]["timestamp"])
+    timestamplist.extend(inputdata["chart"]["result"][0]["timestamp"])
+
+    calendertime=[]
+
+    for ts in timestamplist:
+        dt=datetime.fromtimestamp(ts)
+        calendertime.append(dt.strftime("%m/%d/%Y"))
+    
+    return calendertime
+
+def parseValues(inputdata):
+    valueList=[]
+    valueList.extend(inputdata["chart"]["result"][0]["indicators"]["quote"][0]["open"])
+    valueList.extend(inputdata["chart"]["result"][0]["indicators"]["quote"][0]["close"])
+
+    return valueList
