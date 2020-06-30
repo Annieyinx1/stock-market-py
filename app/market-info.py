@@ -12,18 +12,24 @@ RAPID_API_KEY = os.getenv("RAPID_API_KEY")
 COUNTRY_CODE = os.getenv("COUNTRY_CODE", default="US")
 LANGUAGE = os.getenv("LANGUAGE", default="en")
 
-url = "https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/get-charts"
 
-querystring = {"region":COUNTRY_CODE,"lang":LANGUAGE,"symbol":"AMZN","interval":"1d","range":"5d"}
+def getStockData(symbol, interval="1d", range="3m"):
+    url = "https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/get-charts"
 
-headers = {
-    'x-rapidapi-host': "apidojo-yahoo-finance-v1.p.rapidapi.com",
-    'x-rapidapi-key': RAPID_API_KEY
-    }
+    querystring = {"region":COUNTRY_CODE,"lang":LANGUAGE,"symbol":symbol,"interval":interval,"range":range}
 
-response = requests.request("GET", url, headers=headers, params=querystring)
+    headers = {
+        'x-rapidapi-host': "apidojo-yahoo-finance-v1.p.rapidapi.com",
+        'x-rapidapi-key': RAPID_API_KEY
+        }
 
-print(response.text)
+    response = requests.request("GET", url, headers=headers, params=querystring)
+    inputdata = json.loads(response.text)
+
+    if(inputdata["chart"]["result"] is None):
+        print("Symbol Not Found")
+    else:
+        return inputdata
 
 def parseTimestamp(inputdata):
     timestamplist=[]
@@ -44,3 +50,14 @@ def parseValues(inputdata):
     valueList.extend(inputdata["chart"]["result"][0]["indicators"]["quote"][0]["close"])
 
     return valueList
+
+def attachEvents(inputdata):
+    eventlist=[]
+    
+    for i in range(0, len(inputdata["chart"]["result"][0]["timestamp"])):
+        eventlist.append("open")
+
+    for i in range(0, len(inputdata["chart"]["result"][0]["timestamp"])):
+        eventlist.append("close")
+    
+    return eventlist
