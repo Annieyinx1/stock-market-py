@@ -23,6 +23,8 @@ def market_report():
     stock_info = process_stock_info(symbol)
     last_trading_date = stock_info["Date"].max() # get last trading date
     stock_info_last_date = stock_info[stock_info.Date==last_trading_date] # filter only info from the last trading date
+    stock_info_last_dat
+    
     stock_info_plot = stock_info[(stock_info.Events=="open") | (stock_info.Events=="close")] # filter open and close price
     LinePlot(stock_info_plot, symbol)
 
