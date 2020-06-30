@@ -1,3 +1,5 @@
+# app/market_info.py
+
 import os
 import json
 from pprint import pprint
@@ -18,7 +20,7 @@ COUNTRY_CODE = os.getenv("COUNTRY_CODE", default="US")
 LANGUAGE = os.getenv("LANGUAGE", default="en")
 
 
-def getStockData(symbol, interval="1d", range="1mo"):
+def getStockData(symbol="AMZN", interval="1d", range="1mo"):
     url = "https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/get-charts"
 
     querystring = {"region":COUNTRY_CODE,"lang":LANGUAGE,"symbol":symbol,"interval":interval,"range":range}
@@ -77,13 +79,15 @@ def attachEvents(inputdata):
     
     return eventlist
 
-def combineData(inputdata):
+def process_stock_info(symbol="AMZN",interval="1d",range="1mo"):
+    inputdata = getStockData(symbol, interval, range)
     stock_info={}
     stock_info["Date"]=parseTimestamp(inputdata)
     stock_info["Values"]=parseValues(inputdata)
     stock_info["Events"]=attachEvents(inputdata)
     df = pd.DataFrame(stock_info)
     return df
+    
 
 def LinePlot(df_plot, symbol):
     sns.set(style="darkgrid")
@@ -100,13 +104,12 @@ def LinePlot(df_plot, symbol):
         fontweight='light',
         fontsize='xx-small'  
     )
-    plt.show()
+    plt.savefig('historic_trend.png')
 
 
 if __name__ == "__main__":
     symbol = input("Enter the stock symbol: ")
-    inputdata = getStockData(symbol = symbol)
-    df = combineData(inputdata)
+    df = process_stock_info()
     df_plot = df[(df.Events=="open")|(df.Events=="close")]
     print(df)
     print(df_plot)
