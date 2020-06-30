@@ -6,3 +6,4 @@ sendgrid==6.0.5
 seaborn
 matplotlib
 pandas
+flask
